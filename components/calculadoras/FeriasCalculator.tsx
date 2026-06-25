@@ -11,6 +11,13 @@ export default function FeriasCalculator() {
   const [venderUmTerco, setVenderUmTerco] = useState(false);
   const [dependentes, setDependentes] = useState("0");
 
+  function limpar() {
+    setSalario("");
+    setDias("30");
+    setVenderUmTerco(false);
+    setDependentes("0");
+  }
+
   const resultado: FeriasResultado | null = useMemo(() => {
     const s = Number(salario);
     if (!s) return null;
@@ -63,6 +70,13 @@ export default function FeriasCalculator() {
           />
           Vender 1/3 das férias (abono pecuniário)
         </label>
+        <button
+          type="button"
+          onClick={limpar}
+          className="text-sm font-medium text-slate-500 hover:text-emerald-700"
+        >
+          Limpar campos
+        </button>
       </div>
 
       <div>

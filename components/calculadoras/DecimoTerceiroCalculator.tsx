@@ -13,6 +13,12 @@ export default function DecimoTerceiroCalculator() {
   const [meses, setMeses] = useState("12");
   const [dependentes, setDependentes] = useState("0");
 
+  function limpar() {
+    setSalario("");
+    setMeses("12");
+    setDependentes("0");
+  }
+
   const resultado: DecimoResultado | null = useMemo(() => {
     const s = Number(salario);
     if (!s) return null;
@@ -51,6 +57,13 @@ export default function DecimoTerceiroCalculator() {
             onChange={(e) => setDependentes(e.target.value)}
           />
         </Field>
+        <button
+          type="button"
+          onClick={limpar}
+          className="text-sm font-medium text-slate-500 hover:text-emerald-700"
+        >
+          Limpar campos
+        </button>
       </div>
 
       <div>

@@ -56,6 +56,11 @@ lib/
    `robots.txt` e nos metadados.
 2. As tabelas de **INSS** e **IRRF** ficam em `lib/tabelas-fiscais.ts`.
    Atualize-as quando o governo publicar novas faixas.
+3. Em `lib/site.ts`, ajuste `EMAIL_CONTATO` para o seu e-mail real (usado nas
+   páginas de Contato e Política de Privacidade) e `ULTIMA_ATUALIZACAO` quando
+   revisar o conteúdo.
+4. O conteúdo editorial (perguntas frequentes e fontes oficiais de cada
+   calculadora) fica em `lib/conteudo.ts`.
 
 ## Espaços para anúncios (Google AdSense)
 

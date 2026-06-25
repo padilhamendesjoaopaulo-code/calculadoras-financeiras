@@ -4,7 +4,13 @@ import { BASE_URL, CALCULADORAS } from "@/lib/site";
 export default function sitemap(): MetadataRoute.Sitemap {
   const agora = new Date();
 
-  const estaticas = ["", "/sobre", "/politica-de-privacidade"].map((path) => ({
+  const estaticas = [
+    "",
+    "/sobre",
+    "/contato",
+    "/politica-de-privacidade",
+    "/termos",
+  ].map((path) => ({
     url: `${BASE_URL}${path}`,
     lastModified: agora,
     changeFrequency: "monthly" as const,

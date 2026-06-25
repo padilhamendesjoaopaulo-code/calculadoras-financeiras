@@ -16,6 +16,14 @@ export default function RescisaoCalculator() {
   const [tipo, setTipo] = useState<TipoRescisao>("sem-justa-causa");
   const [saldoFgts, setSaldoFgts] = useState("");
 
+  function limpar() {
+    setSalario("");
+    setAdmissao("");
+    setDemissao("");
+    setTipo("sem-justa-causa");
+    setSaldoFgts("");
+  }
+
   const resultado: RescisaoResultado | null = useMemo(() => {
     const s = Number(salario);
     if (!s || !admissao || !demissao) return null;
@@ -75,6 +83,13 @@ export default function RescisaoCalculator() {
             onChange={(e) => setSaldoFgts(e.target.value)}
           />
         </Field>
+        <button
+          type="button"
+          onClick={limpar}
+          className="text-sm font-medium text-slate-500 hover:text-emerald-700"
+        >
+          Limpar campos
+        </button>
       </div>
 
       <div>

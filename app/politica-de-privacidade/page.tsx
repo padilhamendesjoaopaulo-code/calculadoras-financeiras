@@ -82,8 +82,7 @@ export default function Page() {
       <h2>6. Contato</h2>
       <p>
         Em caso de dúvidas sobre esta Política de Privacidade, entre em contato
-        através dos canais informados na página{" "}
-        <a href="/sobre">Sobre</a>.
+        através da nossa página de <a href="/contato">Contato</a>.
       </p>
     </article>
   );

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import { SITE_NOME, BASE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -41,9 +42,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NOME,
+    url: BASE_URL,
+    inLanguage: "pt-BR",
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NOME,
+      url: BASE_URL,
+    },
+  };
+
   return (
     <html lang="pt-BR" className="h-full antialiased">
       <body className="flex min-h-full flex-col bg-slate-50">
+        <JsonLd data={websiteJsonLd} />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

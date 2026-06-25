@@ -1,4 +1,6 @@
 import { formatarBRL } from "@/lib/format";
+import { SITE_NOME } from "@/lib/site";
+import CopyButton from "./CopyButton";
 
 interface Linha {
   rotulo: string;
@@ -17,9 +19,24 @@ export default function ResultCard({
   titulo: string;
   linhas: Linha[];
 }) {
+  const textoResumo =
+    `${titulo}\n` +
+    linhas
+      .map(
+        (l) =>
+          `${l.rotulo}: ${l.desconto && !l.destaque ? "− " : ""}${formatarBRL(
+            Math.abs(l.valor),
+          )}`,
+      )
+      .join("\n") +
+    `\n\nCalculado em ${SITE_NOME}`;
+
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h3 className="mb-4 text-base font-semibold text-slate-800">{titulo}</h3>
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h3 className="text-base font-semibold text-slate-800">{titulo}</h3>
+        <CopyButton texto={textoResumo} />
+      </div>
       <dl className="space-y-1">
         {linhas.map((l, i) => (
           <div

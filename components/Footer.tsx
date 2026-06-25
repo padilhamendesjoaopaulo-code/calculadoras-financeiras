@@ -56,6 +56,16 @@ export default function Footer() {
                   Política de Privacidade
                 </Link>
               </li>
+              <li>
+                <Link href="/termos" className="hover:text-emerald-700 hover:underline">
+                  Termos de Uso
+                </Link>
+              </li>
+              <li>
+                <Link href="/contato" className="hover:text-emerald-700 hover:underline">
+                  Contato
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

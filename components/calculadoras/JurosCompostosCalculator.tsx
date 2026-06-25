@@ -27,6 +27,15 @@ export default function JurosCompostosCalculator() {
   const [tempo, setTempo] = useState("10");
   const [tempoUnidade, setTempoUnidade] = useState<"meses" | "anos">("anos");
 
+  function limpar() {
+    setInicial("");
+    setAporte("");
+    setTaxa("");
+    setPeriodoTipo("mensal");
+    setTempo("");
+    setTempoUnidade("anos");
+  }
+
   const resultado: JurosResultado | null = useMemo(() => {
     const taxaDecimal = (Number(taxa) || 0) / 100;
     const taxaMensal =
@@ -103,6 +112,13 @@ export default function JurosCompostosCalculator() {
               </Select>
             </Field>
           </div>
+          <button
+            type="button"
+            onClick={limpar}
+            className="text-sm font-medium text-slate-500 hover:text-emerald-700"
+          >
+            Limpar campos
+          </button>
         </div>
 
         <div>

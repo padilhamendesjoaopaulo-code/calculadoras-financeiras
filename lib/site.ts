@@ -3,6 +3,16 @@
 export const SITE_NOME = "Calculadoras Brasil";
 
 /**
+ * E-mail de contato exibido nas páginas de Contato e Política de Privacidade.
+ * ALTERE para o seu e-mail real antes de publicar (o Google AdSense costuma
+ * exigir um canal de contato funcional).
+ */
+export const EMAIL_CONTATO = "contato@calculadorasbrasil.com.br";
+
+/** Data da última revisão do conteúdo (exibida nas páginas para transparência). */
+export const ULTIMA_ATUALIZACAO = "junho de 2025";
+
+/**
  * URL base do site (usada em sitemap, robots e metadados Open Graph).
  * Após o deploy, substitua pelo seu subdomínio da Vercel, ex.:
  *   "https://calculadoras-financeiras.vercel.app"

@@ -14,6 +14,12 @@ export default function FinanciamentoCalculator() {
   const [taxa, setTaxa] = useState("1.2");
   const [parcelas, setParcelas] = useState("120");
 
+  function limpar() {
+    setValor("");
+    setTaxa("");
+    setParcelas("");
+  }
+
   const resultado: FinanciamentoResultado | null = useMemo(() => {
     const v = Number(valor);
     const n = Number(parcelas);
@@ -51,6 +57,13 @@ export default function FinanciamentoCalculator() {
               onChange={(e) => setParcelas(e.target.value)}
             />
           </Field>
+          <button
+            type="button"
+            onClick={limpar}
+            className="text-sm font-medium text-slate-500 hover:text-emerald-700"
+          >
+            Limpar campos
+          </button>
         </div>
 
         <div>
