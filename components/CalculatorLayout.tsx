@@ -1,17 +1,21 @@
 import { ReactNode } from "react";
 import AdSlot from "./AdSlot";
+import RelatedCalculators from "./RelatedCalculators";
 
 /**
  * Layout padrão de uma página de calculadora:
  * título + introdução, AD SLOT no topo, a calculadora (form + resultado),
- * AD SLOT entre a calculadora e o texto, e o texto explicativo (SEO).
+ * AD SLOT entre a calculadora e o texto, o texto explicativo (SEO) e, por fim,
+ * o bloco "Veja também" com as outras calculadoras.
  */
 export default function CalculatorLayout({
+  slug,
   titulo,
   introducao,
   calculadora,
   explicacao,
 }: {
+  slug: string;
   titulo: string;
   introducao: string;
   calculadora: ReactNode;
@@ -35,6 +39,8 @@ export default function CalculatorLayout({
       <AdSlot rotulo="Publicidade" />
 
       <section className="prose-custom mt-2">{explicacao}</section>
+
+      <RelatedCalculators slugAtual={slug} />
     </article>
   );
 }

@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <CalculatorLayout
+      slug="juros-compostos"
       titulo="Calculadora de Juros Compostos"
       introducao="Simule o crescimento do seu dinheiro ao longo do tempo, com aportes mensais e visualização em gráfico."
       calculadora={<JurosCompostosCalculator />}

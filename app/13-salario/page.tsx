@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <CalculatorLayout
+      slug="13-salario"
       titulo="Calculadora de 13º Salário"
       introducao="Descubra o valor do seu 13º salário, dividido em primeira e segunda parcela, já considerando os descontos."
       calculadora={<DecimoTerceiroCalculator />}

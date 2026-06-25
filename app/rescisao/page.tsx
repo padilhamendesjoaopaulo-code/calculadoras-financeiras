@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <CalculatorLayout
+      slug="rescisao"
       titulo="Calculadora de Rescisão Trabalhista (CLT)"
       introducao="Informe os dados do contrato e o tipo de rescisão para estimar todas as verbas rescisórias a que você tem direito."
       calculadora={<RescisaoCalculator />}

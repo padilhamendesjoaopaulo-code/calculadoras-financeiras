@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <CalculatorLayout
+      slug="financiamento"
       titulo="Calculadora de Financiamento (Tabela Price)"
       introducao="Calcule o valor da parcela fixa, o total pago e os juros de um financiamento, com a tabela de amortização completa."
       calculadora={<FinanciamentoCalculator />}

@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <CalculatorLayout
+      slug="ferias"
       titulo="Calculadora de Férias"
       introducao="Calcule quanto você vai receber de férias, com o terço constitucional e os descontos de INSS e IRRF."
       calculadora={<FeriasCalculator />}
