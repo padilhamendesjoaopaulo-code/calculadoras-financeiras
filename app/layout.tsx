@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     url: BASE_URL,
   },
   robots: { index: true, follow: true },
+  verification: {
+    google: "pLVDAOexmsT_i9Xywe4cZlYRQk1mpv75sedU-NEiHOY",
+  },
 };
 
 export const viewport: Viewport = {
