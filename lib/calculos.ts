@@ -74,7 +74,8 @@ export interface RescisaoResultado {
   multaFgts: number;
   total: number;
   diasTrabalhadosNoMes: number;
-  mesesProporcionais: number;
+  avos13: number;
+  avosFerias: number;
 }
 
 /** Calcula a rescisão de forma simplificada conforme o tipo. */
@@ -85,12 +86,17 @@ export function calcularRescisao(input: RescisaoInput): RescisaoResultado {
 
   const salarioDia = salario / 30;
 
-  // Saldo de salário: dias trabalhados no mês da demissão.
-  const diasTrabalhadosNoMes = demissao.getDate();
+  // Saldo de salário: dias trabalhados no mês da demissão (limitado a 30).
+  const diasTrabalhadosNoMes = Math.min(demissao.getDate(), 30);
   const saldoSalario = arred(salarioDia * diasTrabalhadosNoMes);
 
-  // Meses proporcionais no ano da rescisão (fração >= 15 dias conta como mês).
-  const mesesProporcionais = mesesAvosNoAno(demissao);
+  // Avos proporcionais (fração com 15+ dias conta como mês inteiro):
+  // - 13º: meses trabalhados no ANO CIVIL da rescisão (a partir de 1º/jan);
+  // - férias: meses desde o último aniversário do contrato (período aquisitivo).
+  const inicioAno = new Date(demissao.getFullYear(), 0, 1);
+  const inicio13 = inicioAno > admissao ? inicioAno : admissao;
+  const avos13 = contarAvos(inicio13, demissao);
+  const avosFerias = contarAvos(ultimoAniversario(admissao, demissao), demissao);
 
   // Aviso prévio indenizado: devido quando o empregador encerra o vínculo.
   // sem-justa-causa -> 1 salário; acordo -> metade; pedido/justa-causa -> 0.
@@ -101,13 +107,13 @@ export function calcularRescisao(input: RescisaoInput): RescisaoResultado {
   // Férias proporcionais + 1/3 (devidas em todos os casos, exceto justa causa).
   let feriasProporcionais = 0;
   if (tipo !== "justa-causa") {
-    feriasProporcionais = arred((salario / 12) * mesesProporcionais);
+    feriasProporcionais = arred((salario / 12) * avosFerias);
   }
   const umTercoFerias = arred(feriasProporcionais / 3);
 
   // 13º proporcional (devido, exceto justa causa).
   const decimoProporcional =
-    tipo === "justa-causa" ? 0 : arred((salario / 12) * mesesProporcionais);
+    tipo === "justa-causa" ? 0 : arred((salario / 12) * avos13);
 
   // Multa do FGTS sobre o saldo depositado:
   // 40% (sem justa causa), 20% (acordo), 0% (pedido / justa causa).
@@ -141,7 +147,8 @@ export function calcularRescisao(input: RescisaoInput): RescisaoResultado {
     multaFgts,
     total,
     diasTrabalhadosNoMes,
-    mesesProporcionais,
+    avos13,
+    avosFerias,
   };
 }
 
@@ -171,21 +178,20 @@ export interface FeriasResultado {
 /** Calcula férias + 1/3, abono pecuniário e descontos. */
 export function calcularFerias(input: FeriasInput): FeriasResultado {
   const { salario, venderUmTerco, dependentes = 0 } = input;
-  // Se vender 1/3, goza no máximo 20 dias e converte 10 em abono.
-  const diasGozo = clamp(input.diasFerias, 0, 30);
   const salarioDia = salario / 30;
+
+  // O período de férias é de 30 dias. Ao vender 1/3 (abono pecuniário), o
+  // trabalhador converte 10 dias em dinheiro e descansa no máximo 20 dias —
+  // por isso os dias gozados são limitados a (30 - dias vendidos).
+  const diasAbono = venderUmTerco ? 10 : 0;
+  const diasGozo = clamp(input.diasFerias, 0, 30 - diasAbono);
 
   const valorFerias = arred(salarioDia * diasGozo);
   const umTercoConstitucional = arred(valorFerias / 3);
 
-  // Abono pecuniário: 1/3 dos dias (até 10 dias) + 1/3 sobre o abono.
-  let abonoPecuniario = 0;
-  let umTercoAbono = 0;
-  if (venderUmTerco) {
-    const diasAbono = Math.min(10, Math.round(diasGozo / 2));
-    abonoPecuniario = arred(salarioDia * diasAbono);
-    umTercoAbono = arred(abonoPecuniario / 3);
-  }
+  // Abono pecuniário (10 dias) + 1/3 sobre o abono. Isento de INSS/IRRF.
+  const abonoPecuniario = arred(salarioDia * diasAbono);
+  const umTercoAbono = arred(abonoPecuniario / 3);
 
   // O abono pecuniário é isento de INSS/IRRF; os descontos incidem
   // apenas sobre as férias gozadas + 1/3.
@@ -410,12 +416,37 @@ function mesesEntre(inicio: Date, fim: Date): number {
   return Math.max(0, anos * 12 + meses);
 }
 
+/** Último aniversário do contrato anterior (ou igual) à data de demissão. */
+function ultimoAniversario(admissao: Date, demissao: Date): Date {
+  const aniv = new Date(
+    demissao.getFullYear(),
+    admissao.getMonth(),
+    admissao.getDate(),
+  );
+  if (aniv > demissao) aniv.setFullYear(aniv.getFullYear() - 1);
+  return aniv < admissao ? admissao : aniv;
+}
+
 /**
- * Avos proporcionais no ano da data informada: conta os meses do ano
- * corrente, somando 1 quando há 15+ dias trabalhados no último mês.
+ * Conta os "avos" (meses para fins de proporcionalidade) entre duas datas:
+ * cada mês cheio conta 1; uma fração final com 15+ dias também conta 1.
+ * O resultado é limitado a 12.
  */
-function mesesAvosNoAno(data: Date): number {
-  let meses = data.getMonth(); // meses completos antes do mês atual (0-based)
-  if (data.getDate() >= 15) meses += 1;
-  return clamp(meses, 0, 12);
+function contarAvos(inicio: Date, fim: Date): number {
+  if (fim <= inicio) return 0;
+  let meses = 0;
+  const cursor = new Date(inicio);
+  while (meses < 12) {
+    const proximo = new Date(cursor);
+    proximo.setMonth(proximo.getMonth() + 1);
+    if (proximo <= fim) {
+      meses += 1;
+      cursor.setTime(proximo.getTime());
+    } else {
+      const dias = Math.floor((fim.getTime() - cursor.getTime()) / 86_400_000);
+      if (dias >= 15) meses += 1;
+      break;
+    }
+  }
+  return Math.min(meses, 12);
 }

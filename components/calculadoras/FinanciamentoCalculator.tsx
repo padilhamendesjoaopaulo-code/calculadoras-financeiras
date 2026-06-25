@@ -81,7 +81,7 @@ export default function FinanciamentoCalculator() {
             Tabela de amortização
           </h3>
           <div className="max-h-96 overflow-auto rounded-lg border border-slate-100">
-            <table className="w-full border-collapse text-right text-sm">
+            <table className="w-full min-w-[520px] border-collapse text-right text-sm">
               <thead className="sticky top-0 bg-slate-50 text-xs uppercase text-slate-500">
                 <tr>
                   <th className="px-3 py-2 text-left">Parcela</th>

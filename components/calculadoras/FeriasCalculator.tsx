@@ -32,11 +32,18 @@ export default function FeriasCalculator() {
             onChange={(e) => setSalario(e.target.value)}
           />
         </Field>
-        <Field label="Dias de férias" hint="De 1 a 30 dias.">
+        <Field
+          label="Dias de férias (descanso)"
+          hint={
+            venderUmTerco
+              ? "Ao vender 1/3, o descanso é limitado a 20 dias."
+              : "De 1 a 30 dias."
+          }
+        >
           <NumberInput
             value={dias}
             min={1}
-            max={30}
+            max={venderUmTerco ? 20 : 30}
             onChange={(e) => setDias(e.target.value)}
           />
         </Field>
@@ -71,7 +78,7 @@ export default function FeriasCalculator() {
               ...(resultado.abonoPecuniario > 0
                 ? [
                     {
-                      rotulo: "Abono pecuniário (venda 1/3)",
+                      rotulo: "Abono pecuniário (10 dias)",
                       valor: resultado.abonoPecuniario,
                     },
                     { rotulo: "1/3 sobre o abono", valor: resultado.umTercoAbono },
