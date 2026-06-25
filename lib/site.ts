@@ -17,7 +17,7 @@ export const ULTIMA_ATUALIZACAO = "junho de 2025";
  * Após o deploy, substitua pelo seu subdomínio da Vercel, ex.:
  *   "https://calculadoras-financeiras.vercel.app"
  */
-export const BASE_URL = "https://calculadoras-financeiras.vercel.app";
+export const BASE_URL = "https://calculadoras-financeiras-psi.vercel.app";
 
 export interface Calculadora {
   slug: string;
