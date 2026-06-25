@@ -85,6 +85,8 @@ export function calcularRescisao(input: RescisaoInput): RescisaoResultado {
   const demissao = new Date(input.demissao + "T00:00:00");
 
   const salarioDia = salario / 30;
+  const mesesTotais = mesesEntre(admissao, demissao);
+  const anosCompletos = Math.floor(mesesTotais / 12);
 
   // Saldo de salário: dias trabalhados no mês da demissão (limitado a 30).
   const diasTrabalhadosNoMes = Math.min(demissao.getDate(), 30);
@@ -98,11 +100,13 @@ export function calcularRescisao(input: RescisaoInput): RescisaoResultado {
   const avos13 = contarAvos(inicio13, demissao);
   const avosFerias = contarAvos(ultimoAniversario(admissao, demissao), demissao);
 
-  // Aviso prévio indenizado: devido quando o empregador encerra o vínculo.
-  // sem-justa-causa -> 1 salário; acordo -> metade; pedido/justa-causa -> 0.
+  // Aviso prévio indenizado: 30 dias + 3 dias por ano trabalhado (máx. 90),
+  // devido quando o empregador encerra o vínculo.
+  // sem-justa-causa -> integral; acordo -> metade; pedido/justa-causa -> 0.
+  const diasAviso = Math.min(90, 30 + 3 * anosCompletos);
   let avisoPrevio = 0;
-  if (tipo === "sem-justa-causa") avisoPrevio = salario;
-  else if (tipo === "acordo") avisoPrevio = arred(salario / 2);
+  if (tipo === "sem-justa-causa") avisoPrevio = arred(salarioDia * diasAviso);
+  else if (tipo === "acordo") avisoPrevio = arred((salarioDia * diasAviso) / 2);
 
   // Férias proporcionais + 1/3 (devidas em todos os casos, exceto justa causa).
   let feriasProporcionais = 0;
@@ -118,7 +122,6 @@ export function calcularRescisao(input: RescisaoInput): RescisaoResultado {
   // Multa do FGTS sobre o saldo depositado:
   // 40% (sem justa causa), 20% (acordo), 0% (pedido / justa causa).
   // Se o saldo de FGTS não for informado, estima-se 8% por mês trabalhado.
-  const mesesTotais = mesesEntre(admissao, demissao);
   const saldoFgts =
     input.saldoFgts && input.saldoFgts > 0
       ? input.saldoFgts
